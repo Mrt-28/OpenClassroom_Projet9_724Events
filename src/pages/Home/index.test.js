@@ -1,5 +1,8 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import Home from "./index";
+import * as DataContext from "../../contexts/DataContext";
+import EventCard from "../../components/EventCard";
+import PeopleCard from "../../components/PeopleCard";
 
 describe("When Form is created", () => {
   it("a list of fields card is displayed", async () => {
@@ -29,16 +32,71 @@ describe("When Form is created", () => {
 
 
 describe("When a page is created", () => {
-  it("a list of events is displayed", () => {
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+  beforeEach(() => {
+    jest.spyOn(DataContext, "useData").mockReturnValue({
+      last: {
+        cover: "/images/default-event.png",
+        title: "Test Event",
+        date: new Date("2025-10-06")
+      }
+    });
+  });
+
+  it("a list of events is displayed", async () => {
     // to implement
+    render(
+      <Home>
+        <EventCard
+          imageSrc="http://src-image"
+          imageAlt="image-alt-text"
+          title="test event"
+          label="test label"
+          date={new Date("2022-04-01")}
+        />
+      </Home>
+    );
+    const eventCard = await screen.findAllByTestId("card-event-testid");
+    expect(eventCard.length).toBeGreaterThan(0);
   })
-  it("a list a people is displayed", () => {
+  it("a list a people is displayed", async () => {
     // to implement
+    render(
+      <Home>
+        <PeopleCard
+          imageSrc="http://src-image"
+          name="test name"
+          position="test position"
+        />
+      </Home>
+    );
+    const peopleCard = await screen.findAllByTestId("card-people-testid");
+    expect(peopleCard.length).toBeGreaterThan(0);
   })
-  it("a footer is displayed", () => {
-    // to implement
+  it("a footer is displayed", async () => {
+    // to implement -------------
+    render(<Home />);    
+    const footer = await screen.findByRole("contentinfo");
+    expect(footer).toBeInTheDocument();
   })
-  it("an event card, with the last event, is displayed", () => {
+  it("an event card, with the last event, is displayed", async () => {
     // to implement
+    render(
+    <Home>
+      <EventCard
+        imageSrc="http://src-image"
+        title="test event"
+        date={new Date("2022-04-01")}
+        small
+        label="boom"
+      />      
+    </Home>
+    );
+    const footer = await screen.findByRole("contentinfo");
+    const lastEvent = await within(footer).findByTestId("card-event-testid");
+    expect(lastEvent).toBeInTheDocument();
   })
 });

@@ -16,9 +16,9 @@ const Select = ({
   const [value, setValue] = useState();
   const [collapsed, setCollapsed] = useState(true);
   const changeValue = (newValue) => {
-    onChange();
-    setValue(newValue);
-    setCollapsed(newValue);
+    onChange(newValue) // on transmet la valeur au parent    
+    setValue(newValue)
+    setCollapsed(true) // on replie le menu après sélection
   };
   return (
     <div className={`SelectContainer ${type}`} data-testid="select-testid">
@@ -40,6 +40,7 @@ const Select = ({
                 <li key={s} onClick={() => changeValue(s)}>
                   <input
                     defaultChecked={value === s}
+                    value={s}
                     name="selected"
                     type="radio"
                   />{" "}
